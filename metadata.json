@@ -1,0 +1,6 @@
+{
+  "name": "tea 的家 - AI 聊天助手",
+  "description": "清新可爱的薄荷绿风格手机 App 界面，与 tea 畅聊互动",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

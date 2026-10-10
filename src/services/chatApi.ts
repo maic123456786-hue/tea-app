@@ -1,0 +1,59 @@
+export interface ChatApiResponse {
+  reply?: string;
+  message?: string;
+  error?: string;
+}
+
+const API_ENDPOINT = 'https://tea-backend-one.vercel.app/chat';
+
+/**
+ * Send a chat message to the tea backend service
+ */
+export async function sendChatMessage(
+  message: string,
+  sessionId: number = 1
+): Promise<string> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: message.trim(),
+        sessionId: Number(sessionId) || 1,
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`请求失败 (${response.status}): 无法连接到 tea 的家服务`);
+    }
+
+    const data: ChatApiResponse = await response.json();
+
+    if (data.reply) {
+      return data.reply;
+    }
+
+    if (data.message && typeof data.message === 'string') {
+      return data.message;
+    }
+
+    throw new Error('未收到有效的回复内容');
+  } catch (error: unknown) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error('请求超时，tea 好像在用心沏茶，请稍后重试哦～');
+      }
+      throw error;
+    }
+    throw new Error('网络请求异常，请检查网络连接');
+  }
+}
