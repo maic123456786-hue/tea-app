@@ -1,0 +1,12 @@
+{
+  "background_color": "#a8e6cf",
+  "description": "我的家",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "tea的家",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "(  •̀ ᗜ •́  )",
+  "start_url": "/",
+  "theme_color": "#ffffff"
+}
