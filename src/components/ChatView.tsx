@@ -60,7 +60,7 @@ export function ChatView({
   const chatWallpaperInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = (smooth = true) => {
-    if (isSearching) return; // 搜索时不自动滚到底部
+    if (isSearching) return;
     messagesEndRef.current?.scrollIntoView({
       behavior: smooth ? 'smooth' : 'auto',
       block: 'end',
@@ -73,7 +73,6 @@ export function ChatView({
     }
   }, [messages, isLoading, settings.autoScroll, isSearching]);
 
-  // 打开搜索时聚焦
   useEffect(() => {
     if (isSearching) {
       setTimeout(() => {
@@ -120,14 +119,12 @@ export function ChatView({
     inputRef.current?.focus();
   };
 
-  // 搜索匹配条数统计
   const matchingCount = useMemo(() => {
     if (!searchQuery.trim()) return 0;
     const query = searchQuery.trim().toLowerCase();
     return messages.filter((m) => m.text.toLowerCase().includes(query)).length;
   }, [messages, searchQuery]);
 
-  // 高亮匹配文字渲染辅助函数
   const renderHighlightedText = (text: string, query: string) => {
     if (!query.trim()) return text;
 
@@ -213,7 +210,6 @@ export function ChatView({
       {/* 顶部标题栏 */}
       <header className="shrink-0 bg-white/70 backdrop-blur-xl border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between z-10 shadow-[0_2px_12px_rgba(16,185,129,0.04)]">
         <div className="flex items-center gap-2">
-          {/* 返回桌面按钮 */}
           <button
             type="button"
             onClick={onBackToHome}
@@ -222,7 +218,6 @@ export function ChatView({
             <Home className="w-4 h-4" />
           </button>
 
-          {/* tea 头像 */}
           <button
             type="button"
             onClick={() => onEditAvatar('tea')}
@@ -248,7 +243,6 @@ export function ChatView({
             </span>
           </button>
 
-          {/* 名字与实时心情 */}
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 flex-wrap">
               <h1
@@ -277,9 +271,7 @@ export function ChatView({
           </div>
         </div>
 
-        {/* 右侧操作按钮：搜索图标、更换相册背景、清空 */}
         <div className="flex items-center gap-1">
-          {/* 搜索图标：点击后展开输入框 */}
           <button
             type="button"
             onClick={() => setIsSearching((prev) => !prev)}
@@ -293,7 +285,6 @@ export function ChatView({
             <Search className="w-4 h-4" />
           </button>
 
-          {/* 从手机相册更换聊天背景 */}
           <button
             type="button"
             onClick={() => chatWallpaperInputRef.current?.click()}
@@ -314,7 +305,6 @@ export function ChatView({
             </button>
           )}
 
-          {/* 清空对话按钮 */}
           <button
             type="button"
             onClick={() => setShowClearConfirm(true)}
@@ -479,6 +469,18 @@ export function ChatView({
                         }
                   }
                 >
+                  {/* 👇 思考链折叠框：只有 tea 的消息且含有 reasoning 时才显示 */}
+                  {!isUser && msg.reasoning && (
+                    <details className="mb-2 text-[11px] opacity-75 cursor-pointer border-b border-slate-200/50 pb-2">
+                      <summary className="select-none font-medium text-emerald-700 hover:text-emerald-800">
+                        🤔 点开看看它在想什么
+                      </summary>
+                      <p className="mt-1.5 whitespace-pre-wrap text-slate-600 leading-relaxed">
+                        {msg.reasoning}
+                      </p>
+                    </details>
+                  )}
+
                   {/* 高亮渲染消息正文 */}
                   <p className="whitespace-pre-wrap">
                     {renderHighlightedText(msg.text, searchQuery)}
