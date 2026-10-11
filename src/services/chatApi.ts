@@ -1,5 +1,6 @@
 export interface ChatApiResponse {
   reply?: string;
+  reasoning?: string;
   message?: string;
   error?: string;
 }
@@ -12,7 +13,7 @@ const API_ENDPOINT = 'https://tea-backend-one.vercel.app/chat';
 export async function sendChatMessage(
   message: string,
   sessionId: number = 1
-): Promise<string> {
+): Promise<string> { reply: string; reasoning: string }> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
@@ -37,13 +38,19 @@ export async function sendChatMessage(
 
     const data: ChatApiResponse = await response.json();
 
-    if (data.reply) {
-      return data.reply;
-    }
+          if (data.reply) {
+        return {
+          reply: data.reply,
+          reasoning: data.reasoning || ''
+        };
+      }
 
-    if (data.message && typeof data.message === 'string') {
-      return data.message;
-    }
+      if (data.message && typeof data.message === 'string') {
+        return {
+          reply: data.message,
+          reasoning: data.reasoning || ''
+        };
+      }
 
     throw new Error('未收到有效的回复内容');
   } catch (error: unknown) {
