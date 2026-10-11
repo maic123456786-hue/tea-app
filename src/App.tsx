@@ -286,7 +286,7 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const reply = await sendChatMessage(text, settings.sessionId);
+      const { reply, reasoning } = await sendChatMessage(text, settings.sessionId);
 
       // Random matching mood based on tea response
       const randomMood = AI_MOODS[Math.floor(Math.random() * AI_MOODS.length)];
@@ -300,6 +300,7 @@ export default function App() {
         id: 'reply-' + Date.now(),
         sender: 'tea',
         text: reply,
+        reasoning: reasoning,
         timestamp: Date.now(),
         status: 'sent',
       };
