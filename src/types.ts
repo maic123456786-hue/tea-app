@@ -6,6 +6,7 @@ export interface Message {
   id: string;
   sender: 'user' | 'tea';
   text: string;
+  reasoning?: string;
   timestamp: number;
   status?: 'sending' | 'sent' | 'error';
   errorMessage?: string;
