@@ -13,7 +13,7 @@ const API_ENDPOINT = 'https://tea-backend-one.vercel.app/chat';
 export async function sendChatMessage(
   message: string,
   sessionId: number = 1
-): Promise<string> { reply: string; reasoning: string }> {
+): Promise<{ reply: string; reasoning: string }> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
