@@ -300,7 +300,7 @@ export default function App() {
         id: 'reply-' + Date.now(),
         sender: 'tea',
         text: reply,
-       // reasoning: reasoning,
+        reasoning: reasoning,
         timestamp: Date.now(),
         status: 'sent',
       };
