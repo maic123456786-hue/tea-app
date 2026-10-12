@@ -164,20 +164,15 @@ export function CalendarModal({
         }
       } catch {
         // Fallback friendly reply if network issue
-        const fallbackReply = `已收到你今天的心事呢～ 无论开心还是疲惫，tea 都在日历里默默陪伴着你，泡一杯暖茶给你抱抱哦 🍵✨`;
-        const updatedEntry: CalendarEntry = {
-          ...initialEntry,
-          aiReply: fallbackReply,
-          isReplying: false,
-          updatedAt: Date.now(),
-        };
-        onSaveCalendarEntry(updatedEntry);
+        
+const updatedEntry: CalendarEntry = {
+  ...initialEntry,
+  aiReply: existing?.aiReply,
+  isReplying: false,
+  updatedAt: Date.now(),
+};
+onSaveCalendarEntry(updatedEntry);
 
-        const randomReminder =
-          AI_CALENDAR_REMINDER_MESSAGES[
-            Math.floor(Math.random() * AI_CALENDAR_REMINDER_MESSAGES.length)
-          ];
-        onTriggerCalendarPopup(selectedDateStr, randomReminder);
       } finally {
         setIsAiReplying(false);
       }
