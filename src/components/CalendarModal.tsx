@@ -11,7 +11,7 @@ import {
   Edit3,
 } from 'lucide-react';
 import { CalendarEntry, AppSettings } from '../types';
-import { sendChatMessage } from '../services/chatApi';
+import { sendCalendarReply } from '../services/chatApi';
 import { soundManager } from '../utils/audio';
 
 interface CalendarModalProps {
@@ -133,8 +133,12 @@ export function CalendarModal({
       setIsAiReplying(true);
       try {
         // Send to backend asking for a warm diary reply
-        const promptForDiary = `【日历心事日记】今天是${selectedDateStr}，我的今日心情是${editingEmoji}。我想对你说：“${userNoteText}”。请作为治愈茶伴 tea，用温柔温暖、关切治愈的口吻，简短（50字左右）在日历下方回复我。`;
-        const reply = await sendChatMessage(promptForDiary, settings.sessionId);
+        const reply = await sendCalendarReply(
+  selectedDateStr,
+  editingEmoji,
+  userNoteText,
+  settings.sessionId
+);
 
         const updatedEntry: CalendarEntry = {
           ...initialEntry,
