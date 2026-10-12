@@ -74,27 +74,41 @@ export async function sendCalendarReply(
   note: string,
   sessionId: number = 1
 ): Promise<string> {
-    const controller = new AbortController();
+  const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 120000);
-  const response = await fetch(CALENDAR_API_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      date,
-      emoji,
-      note,
-      sessionId: Number(sessionId) || 1,
-    }),
+
+  try {
+    const response = await fetch(CALENDAR_API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        date,
+        emoji,
+        note,
+        sessionId: Number(sessionId) || 1,
+      }),
       signal: controller.signal,
-  });
+    });
 
-  const data: { reply?: string; error?: string } = await response.json();
+    const data: { reply?: string; error?: string } =
+      await response.json();
 
-  if (!response.ok || !data.reply) {
-    throw new Error(data.error || '获取日历回信失败，请稍后重试');
+    if (!response.ok || !data.reply) {
+      throw new Error(
+        data.error || '获取日历回信失败，请稍后重试'
+      );
+    }
+
+    return data.reply;
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('日历回信等待超时，请稍后重试');
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  return data.reply;
 }
