@@ -15,7 +15,7 @@ export async function sendChatMessage(
   sessionId: number = 1
 ): Promise<{ reply: string; reasoning: string }> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120s timeout
 
   try {
     const response = await fetch(API_ENDPOINT, {
