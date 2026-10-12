@@ -74,6 +74,8 @@ export async function sendCalendarReply(
   note: string,
   sessionId: number = 1
 ): Promise<string> {
+    const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000);
   const response = await fetch(CALENDAR_API_ENDPOINT, {
     method: 'POST',
     headers: {
@@ -85,6 +87,7 @@ export async function sendCalendarReply(
       note,
       sessionId: Number(sessionId) || 1,
     }),
+      signal: controller.signal,
   });
 
   const data: { reply?: string; error?: string } = await response.json();
